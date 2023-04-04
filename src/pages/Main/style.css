@@ -1,0 +1,10 @@
+body {
+    margin: 0;
+    background-color: #f8f9fa!important;
+}
+
+.nav-link{
+    font-size: 1rem;
+    padding: 0.8rem;
+    margin: 0.3rem;
+}
