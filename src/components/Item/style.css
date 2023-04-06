@@ -1,5 +1,7 @@
 .item {
-    width: 18rem;
-    margin: 1rem;
     border: none;
+}
+
+.clmn {
+    padding: 1rem;
 }

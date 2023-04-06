@@ -1,8 +1,8 @@
 package com.rruslek.sneakershopa.repo;
 
-import com.rruslek.sneakershopa.models.Cart;
-import com.rruslek.sneakershopa.models.Item;
-import com.rruslek.sneakershopa.models.ItemInCart;
+import com.rruslek.sneakershopa.dto.Cart;
+import com.rruslek.sneakershopa.dto.Item;
+import com.rruslek.sneakershopa.dto.ItemInCart;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

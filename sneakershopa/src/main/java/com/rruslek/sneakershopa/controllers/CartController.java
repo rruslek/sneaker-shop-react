@@ -1,7 +1,8 @@
 package com.rruslek.sneakershopa.controllers;
 
-import com.rruslek.sneakershopa.models.Cart;
-import com.rruslek.sneakershopa.models.ItemInCart;
+import com.rruslek.sneakershopa.dto.Cart;
+import com.rruslek.sneakershopa.dto.Item;
+import com.rruslek.sneakershopa.dto.ItemInCart;
 import com.rruslek.sneakershopa.repo.CartRepository;
 import com.rruslek.sneakershopa.repo.ItemInCartRepository;
 import com.rruslek.sneakershopa.service.CartService;
@@ -9,11 +10,11 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
+@CrossOrigin(origins="http://localhost:3000/", allowCredentials = "true")
 public class CartController {
     @Autowired
     private CartService cartService;
@@ -22,14 +23,12 @@ public class CartController {
     @Autowired
     private ItemInCartRepository itemInCartRepo;
     @GetMapping("/cart")
-    String getCart(Model model, HttpSession session) {
+    ResponseEntity<Iterable<ItemInCart>> getCart(HttpSession session) {
         Cart cart = cartRepo.findByName(session.getId());
         if (cart == null) cart = cartRepo.save(new Cart(session.getId()));
         Iterable<ItemInCart> itemsInCart = itemInCartRepo.findAllByCartOrderByItem(cart);
-        model.addAttribute("title", "Your Cart");
-        model.addAttribute("items", itemsInCart);
-        model.addAttribute("cart", cart);
-        return "cart";
+
+        return new ResponseEntity<>(itemsInCart, HttpStatus.OK);
     }
 
     @PostMapping("/cart/add/{item_id}")
@@ -38,7 +37,7 @@ public class CartController {
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
-    @DeleteMapping("/cart/add/{item_id}")
+    @DeleteMapping("/cart/{item_id}")
     ResponseEntity<Integer> deleteItemFromCart(@PathVariable("item_id") Long itemId, HttpSession session){
         int count = cartService.deleteItem(itemId, session);
         return new ResponseEntity<>(count, HttpStatus.OK);

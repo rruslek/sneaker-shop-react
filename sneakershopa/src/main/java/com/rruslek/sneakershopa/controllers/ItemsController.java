@@ -1,20 +1,24 @@
 package com.rruslek.sneakershopa.controllers;
 
-import com.rruslek.sneakershopa.models.Cart;
-import com.rruslek.sneakershopa.models.Item;
+import com.rruslek.sneakershopa.dto.Item;
 import com.rruslek.sneakershopa.repo.CartRepository;
 import com.rruslek.sneakershopa.repo.ItemRepository;
 import com.rruslek.sneakershopa.enums.SneakerTypes;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import static com.rruslek.sneakershopa.enums.SneakerTypes.*;
 
-@Controller
+@RestController
+@CrossOrigin(origins = "http://localhost:3000/", allowCredentials = "true")
 public class ItemsController {
     @Autowired
     private ItemRepository itemRepo;
@@ -22,8 +26,8 @@ public class ItemsController {
     @Autowired
     private CartRepository cartRepo;
 
-    @GetMapping("/")
-    String getItems(@RequestParam(value = "type", defaultValue = "ALL") SneakerTypes type, @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir, Model model, HttpSession session ) {
+    @GetMapping("/items")
+    ResponseEntity<Iterable<Item>> getItems(@RequestParam(value = "type", defaultValue = "ALL") SneakerTypes type, @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
         Iterable<Item> items;
         if (type == ALL) {
             if (sortDir.equals("desc")) {
@@ -40,14 +44,8 @@ public class ItemsController {
             }
         }
 
-        Cart cart = cartRepo.findByName(session.getId());
-        if (cart == null) cart = cartRepo.save(new Cart(session.getId()));
-        model.addAttribute("cart", cart);
-        model.addAttribute("items", items);
-        model.addAttribute("title", "SneakerShop");
-        model.addAttribute("sessionId", session.getId());
 
-        return "index";
+        return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
 }

@@ -1,18 +1,38 @@
 import './style.css';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
 
-const Item = () => {
+const Item = ({item, buyFunc}) => {
+    const {id, brand, model, img_url, price} = item;
+
+    const addItem = async (id) => {
+      const response = await fetch(`http://localhost:8080/cart/add/${id}`, {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+        });
+    
+        await response.json()
+        .then(shoes => {
+          buyFunc();
+      });
+  }
+
     return (
-        <Card className='item'>
-          <Card.Img variant="top" src="https://myreact.ru/wp-content/uploads/2020/08/e77d5cec8a0209c142b0b935e1f4989e-1.jpg" />
-          <Card.Body>
-              <Card.Title>Nike</Card.Title>
-              <Card.Text>Air Force 1</Card.Text>
-              <Card.Subtitle className="mb-2">10000 ₽</Card.Subtitle>
-              <Button variant="primary">Добавить в корзину</Button>
-          </Card.Body>
-        </Card>
+        <Col sm={4} className='clmn'>
+          <Card className='item'>
+            <Card.Img variant="top" src={img_url} />
+            <Card.Body>
+                <Card.Title>{brand}</Card.Title>
+                <Card.Text>{model}</Card.Text>
+                <Card.Subtitle className="mb-2">{price}₽</Card.Subtitle>
+                <Button variant="primary" onClick={() => addItem(id)}>Добавить в корзину</Button>
+            </Card.Body>
+          </Card>
+        </Col>
       );
 }
 

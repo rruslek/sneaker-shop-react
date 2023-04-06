@@ -1,9 +1,9 @@
 package com.rruslek.sneakershopa.service;
 
-import com.rruslek.sneakershopa.models.Cart;
-import com.rruslek.sneakershopa.models.Item;
-import com.rruslek.sneakershopa.models.ItemInCart;
-import com.rruslek.sneakershopa.models.Order;
+import com.rruslek.sneakershopa.dto.Cart;
+import com.rruslek.sneakershopa.dto.Item;
+import com.rruslek.sneakershopa.dto.ItemInCart;
+import com.rruslek.sneakershopa.dto.Order;
 import com.rruslek.sneakershopa.repo.CartRepository;
 import com.rruslek.sneakershopa.repo.ItemInCartRepository;
 import com.rruslek.sneakershopa.repo.ItemRepository;
@@ -30,6 +30,7 @@ public class CartService {
     @Transactional
     public Integer addItem(Long Item_id, HttpSession session){
         String cartSession = session.getId();
+
         Cart cart = cartRepo.findByName(cartSession);
         if (cart == null) cart = cartRepo.save(new Cart(cartSession));
         Item item = itemRepo.findById(Item_id).get();
